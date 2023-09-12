@@ -28,22 +28,29 @@ def validate_sales_data(values):
             )
     except ValueError as e:
         print(f"Invalid data: {e}. Please try again..\n")
+        return False
+
+    return True
 
 
 def get_sales_data():
     """
     Get sales data from the user 
     """
-    print("Please enter the sales data from the last market")
-    print("Data should be six figures separated by commas.")
-    print("For Example:10,20,30,40,50,60 \n")
+    while True:
 
-    data_str = input("Enter your data here :")
+        print("Please enter the sales data from the last market")
+        print("Data should be six figures separated by commas.")
+        print("For Example:10,20,30,40,50,60 \n")
 
-    sales_data = data_str.split(",")
-    print(sales_data)
+        data_str = input("Enter your data here :")
 
-    validate_sales_data(sales_data)
+        sales_data = data_str.split(",")
+        print(sales_data)
+
+        if validate_sales_data(sales_data):
+            print("Data valid")
+            break
 
 
 get_sales_data()
