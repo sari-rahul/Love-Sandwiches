@@ -12,11 +12,13 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('love_sandwiches')
 
+
 def validate_sales_data(values):
     """
     Inside the try ,tries to convert the values to integer
      and Raises value error if strings cannot be converted into int
-     or if there aren't exactly 6 values
+     or if there aren't exactly 6 values.The loop will be
+     repeated till the data is valid. 
 
     """
 
@@ -46,11 +48,27 @@ def get_sales_data():
         data_str = input("Enter your data here :")
 
         sales_data = data_str.split(",")
-        print(sales_data)
 
         if validate_sales_data(sales_data):
             print("Data valid")
             break
 
+    return sales_data
 
-get_sales_data()
+
+def update_sales_worksheet(data):
+    """
+    Update sales worksheet,add new row with the list data provided )
+    """
+    print("Updating  sales worksheet .....\n")
+    sales_worksheet = SHEET.worksheet("sales")
+    sales_worksheet.append_row(data)
+    print("Sales worksheet updated sucessfully !!")
+
+def main():    
+    data = get_sales_data()
+    print(data)
+    sales_data = [int(num) for num in data]
+    update_sales_worksheet(sales_data)
+
+main()
