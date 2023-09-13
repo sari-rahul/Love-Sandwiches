@@ -42,7 +42,7 @@ def get_sales_data():
     """
     while True:
 
-        print("Please enter the sales data from the last market")
+        print("\nPlease enter the sales data from the last market")
         print("Data should be six figures separated by commas.")
         print("For Example:10,20,30,40,50,60 \n")
 
@@ -59,12 +59,24 @@ def get_sales_data():
 
 def update_sales_worksheet(data):
     """
-    Update sales worksheet,add new row with the list data provided )
+    Update sales worksheet,add new row with the list data provided
     """
-    print("Updating  sales worksheet .....\n")
+    print("\n Updating  sales worksheet .....\n")
     sales_worksheet = SHEET.worksheet("sales")
     sales_worksheet.append_row(data)
     print("Sales worksheet updated sucessfully !!")
+
+
+def update_surplus_worksheet(data):
+    """
+    Update sales worksheet,add new row with the list data provided
+    """
+    print("\n Updating  surplus worksheet .....\n")
+    surplus_worksheet = SHEET.worksheet("surplus")
+    surplus_worksheet.append_row(data)
+    print("Surplus worksheet updated sucessfully !!")
+
+
 
 def calculate_surplus_data(sales_row):
     """
@@ -74,11 +86,16 @@ def calculate_surplus_data(sales_row):
         negative surplus indicates extra made when the item is sold out
 
     """ 
-    print("Calculating Surplus data.....\n")
+    print("\n\nCalculating Surplus data.....\n")
     stock = SHEET.worksheet("stock").get_all_values()
-    pprint(stock)
     stock_row = stock[-1]
-    print(stock_row)   
+    surplus_data = []
+    
+    for stock, sales in zip(stock_row, sales_row):
+        surplus = int(stock)-sales
+        surplus_data.append(surplus)
+
+    return surplus_data
 
 
 def main():
@@ -86,11 +103,14 @@ def main():
     run all functions
     """    
     data = get_sales_data()
-    print(data)
-    sales_data = [int(num) for num in data]
-    update_sales_worksheet(sales_data)
-    calculate_surplus_data(sales_data)
 
-print("Welcome to LOVE SANDWICHES data Automation")
+    sales_data = [int(num) for num in data]
+
+    update_sales_worksheet(sales_data)
+    new_surplus_data = calculate_surplus_data(sales_data)
+    update_surplus_worksheet(new_surplus_data)
+    
+
+print(" \n\nWelcome to LOVE SANDWICHES data Automation")
 print("------------------------------------------")
 main()
