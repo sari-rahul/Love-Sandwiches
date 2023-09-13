@@ -51,17 +51,17 @@ def get_sales_data():
         sales_data = data_str.split(",")
 
         if validate_sales_data(sales_data):
-            print("Data valid")
+            print("\nData valid")
             break
 
     return sales_data
 
 
-def update_worksheet(data , worksheet):
+def update_worksheet(data, worksheet):
     """
     Update the worksheet as per the data passed and the worksheet name
     """
-    print(f"\n Updating {worksheet} worksheet....\n")
+    print(f"\nUpdating {worksheet} worksheet....\n")
     worksheet_to_update = SHEET.worksheet(worksheet)
     worksheet_to_update.append_row(data)
     print(f"{worksheet} worksheet updated sucessfully!!")
@@ -75,7 +75,7 @@ def calculate_surplus_data(sales_row):
         negative surplus indicates extra made when the item is sold out
 
     """ 
-    print("\n\nCalculating Surplus data.....\n")
+    print("\nCalculating Surplus data.....")
     stock = SHEET.worksheet("stock").get_all_values()
     stock_row = stock[-1]
     surplus_data = []
@@ -98,8 +98,25 @@ def get_last_5_entries():
     for ind in range(1, 7):
         column = sales.col_values(ind)
         columns.append(column[-5:])
-    pprint(columns)
+    return columns
 
+
+def calculate_stock_data(data):
+    """
+    Calculate average of each item from
+    the last 5 day's sales and add 10% to it
+    """
+    print("\nCalculating the stock data...\n")
+    
+    new_stock_data = []
+
+    for column in data:
+        int_column = [int(num) for num in column]
+        average = sum(int_column)/len(int_column)
+        stock_num = average * 1.1
+        new_stock_data.append(round(stock_num))
+    
+    return new_stock_data
 
 def main():
     """
@@ -112,9 +129,12 @@ def main():
     update_worksheet(sales_data, "sales")
     new_surplus_data = calculate_surplus_data(sales_data)
     update_worksheet(new_surplus_data, "surplus")
-    
+    sales_columns = get_last_5_entries()
+    new_stock = calculate_stock_data(sales_columns)
+    update_worksheet(new_stock,"stock")
 
-print(" \n\nWelcome to LOVE SANDWICHES data Automation")
+    print("\nThe New stock should be :\n",new_stock)
+
+print("\n\nWelcome to LOVE SANDWICHES data Automation")
 print("------------------------------------------")
-#main()
-get_last_5_entries()
+main()
