@@ -1,6 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials
-from pprint import pprint
+
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -46,7 +46,7 @@ def get_sales_data():
         print("Data should be six figures separated by commas.")
         print("For Example:10,20,30,40,50,60 \n")
 
-        data_str = input("Enter your data here :")
+        data_str = input("Enter your data here :\n")
 
         sales_data = data_str.split(",")
 
@@ -87,6 +87,7 @@ def calculate_surplus_data(sales_row):
     return surplus_data
 
 def get_last_5_entries():
+
     """
     Collects columns of data from sales worksheet, collecting
     the last 5 entries for each sandwich and returns the data
@@ -118,6 +119,29 @@ def calculate_stock_data(data):
     
     return new_stock_data
 
+
+def get_stocks_values(new_stock):
+    heading_row = SHEET.worksheet("sales").get_all_values()
+    headings = heading_row[0]
+    
+    db = dict()
+
+    for heading, num in zip(headings, new_stock):
+        db[heading] = num
+
+    return db 
+"""def get_stock_values(data):
+    
+
+    'Print out the calculated stock numbers for each sandwich type.'
+
+    
+    print("\n Make the following number of sandwiches for the next market :\n")
+    
+    headings= SHEET.worksheet("sales").get_all_values()[0]
+    return{heading:data for heading,data in zip(headings,data)}"""
+    
+
 def main():
     """
     run all functions
@@ -131,10 +155,17 @@ def main():
     update_worksheet(new_surplus_data, "surplus")
     sales_columns = get_last_5_entries()
     new_stock = calculate_stock_data(sales_columns)
-    update_worksheet(new_stock,"stock")
+    update_worksheet(new_stock, "stock")
+    latest_stock = get_stocks_values(new_stock)
+    print("\nStock needed for tomorrow")
+    print(latest_stock)
 
-    print("\nThe New stock should be :\n",new_stock)
+
 
 print("\n\nWelcome to LOVE SANDWICHES data Automation")
 print("------------------------------------------")
 main()
+
+
+
+
